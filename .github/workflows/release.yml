@@ -1,0 +1,50 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v0.1.0)'
+        required: true
+        default: 'v0.1.0'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.inputs.version || github.ref_name }}
+          name: Release ${{ github.event.inputs.version || github.ref_name }}
+          body: |
+            ## 3DGS REAL ${{ github.event.inputs.version || github.ref_name }}
+            
+            ### 新功能
+            - ✅ 真实相机拍摄：实时预览、引导式拍摄
+            - ✅ 相册批量导入：多文件选择、自动排序
+            - ✅ 照片质量管理：质量评分、过滤功能
+            - ✅ 本地/远端重建：支持两种建模方式
+            - ✅ 模型预览与导出：支持SPLAT/PLY/GLB格式
+            
+            ### 支持平台
+            - Windows
+            - macOS
+            - Linux
+            - Android
+            
+            ### 安装说明
+            请参考 [快速开始指南](https://github.com/ZhaoRunRunRun/3DGS-REAL/blob/main/docs/quick_start.md)
+            
+            ### 项目主页
+            https://zhaorunrunrun.github.io/3DGS-REAL/
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
