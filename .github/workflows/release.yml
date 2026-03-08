@@ -1,4 +1,4 @@
-name: Create Release
+name: Build and Release
 
 on:
   push:
@@ -12,11 +12,148 @@ on:
         default: 'v0.1.0'
 
 jobs:
-  create-release:
+  build-android:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.2'
+          cache: true
+      
+      - name: Install dependencies
+        run: flutter pub get
+      
+      - name: Build APK
+        run: flutter build apk --release
+      
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.2'
+          cache: true
+      
+      - name: Enable Windows desktop
+        run: flutter config --enable-windows-desktop
+      
+      - name: Install dependencies
+        run: flutter pub get
+      
+      - name: Build Windows
+        run: flutter build windows --release
+      
+      - name: Archive Windows build
+        run: |
+          cd build/windows/x64/runner/Release
+          Compress-Archive -Path * -DestinationPath ../../../../../3DGS-REAL-Windows.zip
+      
+      - name: Upload Windows build
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: 3DGS-REAL-Windows.zip
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev libblkid-dev
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.2'
+          cache: true
+      
+      - name: Enable Linux desktop
+        run: flutter config --enable-linux-desktop
+      
+      - name: Install dependencies
+        run: flutter pub get
+      
+      - name: Build Linux
+        run: flutter build linux --release
+      
+      - name: Archive Linux build
+        run: |
+          cd build/linux/x64/release/bundle
+          tar -czf ../../../../../3DGS-REAL-Linux.tar.gz *
+      
+      - name: Upload Linux build
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-build
+          path: 3DGS-REAL-Linux.tar.gz
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.2'
+          cache: true
+      
+      - name: Enable macOS desktop
+        run: flutter config --enable-macos-desktop
+      
+      - name: Install dependencies
+        run: flutter pub get
+      
+      - name: Build macOS
+        run: flutter build macos --release
+      
+      - name: Archive macOS build
+        run: |
+          cd build/macos/Build/Products/Release
+          zip -r ../../../../../3DGS-REAL-macOS.zip three_dgs_real.app
+      
+      - name: Upload macOS build
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-build
+          path: 3DGS-REAL-macOS.zip
+
+  create-release:
+    needs: [build-android, build-windows, build-linux, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
       
       - name: Create Release
         uses: softprops/action-gh-release@v1
@@ -34,16 +171,21 @@ jobs:
             - ✅ 模型预览与导出：支持SPLAT/PLY/GLB格式
             
             ### 支持平台
-            - Windows
-            - macOS
-            - Linux
-            - Android
+            - 🪟 Windows - 下载 `3DGS-REAL-Windows.zip`
+            - 🍎 macOS - 下载 `3DGS-REAL-macOS.zip`
+            - 🐧 Linux - 下载 `3DGS-REAL-Linux.tar.gz`
+            - 🤖 Android - 下载 `app-release.apk`
             
             ### 安装说明
             请参考 [快速开始指南](https://github.com/ZhaoRunRunRun/3DGS-REAL/blob/main/docs/quick_start.md)
             
             ### 项目主页
             https://zhaorunrunrun.github.io/3DGS-REAL/
+          files: |
+            artifacts/android-apk/app-release.apk
+            artifacts/windows-build/3DGS-REAL-Windows.zip
+            artifacts/linux-build/3DGS-REAL-Linux.tar.gz
+            artifacts/macos-build/3DGS-REAL-macOS.zip
           draft: false
           prerelease: false
         env:
