@@ -22,7 +22,7 @@ class PhotoLibraryService {
 
       if (result == null || result.files.isEmpty) {
         return (
-          photos: const [],
+          photos: const <CapturePhoto>[],
           message: '已取消相册导入。',
           usedFallback: false,
         );
@@ -35,7 +35,7 @@ class PhotoLibraryService {
 
       if (files.isEmpty) {
         return (
-          photos: const [],
+          photos: const <CapturePhoto>[],
           message: '所选图片暂时无法读取本地路径，请改用桌面端文件系统选择。',
           usedFallback: false,
         );
