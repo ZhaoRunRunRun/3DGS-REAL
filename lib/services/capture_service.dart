@@ -1,9 +1,11 @@
 import 'dart:math';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../models/capture_photo.dart';
+import '../pages/camera_capture_page.dart';
 
 typedef CameraPreparation = ({
   bool cameraAvailable,
@@ -42,7 +44,7 @@ class CaptureService {
       return (
         cameraAvailable: true,
         usingFallback: false,
-        message: '已就绪：检测到 ${preferredCamera.name.isEmpty ? '可用相机' : preferredCamera.name}，下一步可接入实时取景。',
+        message: '已就绪：检测到 ${preferredCamera.name.isEmpty ? '可用相机' : preferredCamera.name}',
       );
     } catch (_) {
       return (
@@ -51,6 +53,18 @@ class CaptureService {
         message: '相机能力检查失败，已切回演示采集流程。',
       );
     }
+  }
+
+  Future<List<CapturePhoto>> startGuidedCapture(BuildContext context, {int count = 48}) async {
+    final result = await Navigator.of(context).push<CameraCaptureResult>(
+      MaterialPageRoute(builder: (_) => CameraCapturePage(targetCount: count)),
+    );
+
+    if (result == null || result.cancelled || result.photos.isEmpty) {
+      return generateDemoCapture(count: count);
+    }
+
+    return result.photos;
   }
 
   Future<List<CapturePhoto>> generateDemoCapture({required int count}) async {

@@ -12,6 +12,7 @@ import '../services/reconstruction_service.dart';
 import '../widgets/feature_card.dart';
 import '../widgets/job_status_card.dart';
 import '../widgets/photo_orbit_chart.dart';
+import 'model_preview_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -48,23 +49,25 @@ class _HomePageState extends State<HomePage> {
 
     try {
       final preparation = await _captureService.prepareCameraGuide();
-      final photos = await _captureService.generateDemoCapture(count: 48);
+      
+      if (!mounted) return;
 
-      if (!mounted) {
-        return;
+      List<CapturePhoto> photos;
+      if (preparation.cameraAvailable) {
+        photos = await _captureService.startGuidedCapture(context, count: 48);
+      } else {
+        photos = await _captureService.generateDemoCapture(count: 48);
       }
+
+      if (!mounted) return;
 
       setState(() {
         _busy = false;
         _photos = photos;
-        _status = preparation.usingFallback
-            ? '${preparation.message} 已生成 ${photos.length} 张演示环绕照片。'
-            : '${preparation.message} 当前先用 ${photos.length} 张演示照片串起后续建模流程。';
+        _status = '已完成拍摄：共 ${photos.length} 张照片';
       });
     } catch (_) {
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
 
       setState(() {
         _busy = false;
@@ -192,6 +195,12 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _settings = _settings.copyWith(enableQualityFilter: value);
     });
+  }
+
+  void _previewModel(ReconstructionJob job) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => ModelPreviewPage(job: job)),
+    );
   }
 
   @override
@@ -373,7 +382,11 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           const SizedBox(height: 20),
-                          if (_activeJob != null) JobStatusCard(job: _activeJob!),
+                          if (_activeJob != null)
+                            JobStatusCard(
+                              job: _activeJob!,
+                              onPreview: () => _previewModel(_activeJob!),
+                            ),
                           const SizedBox(height: 20),
                           Card(
                             child: Padding(

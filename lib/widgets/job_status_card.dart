@@ -7,9 +7,11 @@ class JobStatusCard extends StatelessWidget {
   const JobStatusCard({
     super.key,
     required this.job,
+    this.onPreview,
   });
 
   final ReconstructionJob job;
+  final VoidCallback? onPreview;
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +69,14 @@ class JobStatusCard extends StatelessWidget {
                 _FactChip(label: '状态', value: job.status.name),
               ],
             ),
+            if (job.status == ReconstructionJobStatus.done && onPreview != null) ...[
+              const SizedBox(height: 16),
+              FilledButton.icon(
+                onPressed: onPreview,
+                icon: const Icon(Icons.visibility),
+                label: const Text('预览模型'),
+              ),
+            ],
           ],
         ),
       ),
