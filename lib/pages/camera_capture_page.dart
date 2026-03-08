@@ -23,7 +23,7 @@ class CameraCapturePage extends StatefulWidget {
 
 class _CameraCapturePageState extends State<CameraCapturePage> {
   CameraController? _controller;
-  List<CapturePhoto> _photos = [];
+  final List<CapturePhoto> _photos = [];
   bool _isCapturing = false;
   String _status = '初始化相机...';
 
@@ -93,7 +93,7 @@ class _CameraCapturePageState extends State<CameraCapturePage> {
   }
 
   void _cancel() {
-    Navigator.of(context).pop(CameraCaptureResult(photos: const [], cancelled: true));
+    Navigator.of(context).pop(const CameraCaptureResult(photos: [], cancelled: true));
   }
 
   @override
