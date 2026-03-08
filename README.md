@@ -1,6 +1,12 @@
 # 3DGS REAL
 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Flutter](https://img.shields.io/badge/Flutter-3.3%2B-02569B?logo=flutter)](https://flutter.dev)
+[![GitHub Pages](https://img.shields.io/badge/Website-GitHub%20Pages-brightgreen)](https://zhaorunrunrun.github.io/3DGS-REAL/)
+
 一个面向 Windows、macOS、Linux、Android 的 Flutter 跨平台应用，用于引导用户围绕物体旋转拍摄照片，或从相册导入一系列环绕物体拍摄的照片，并在本地或远端服务器发起 3D Gaussian Splatting (3DGS) 建模任务。
+
+🌐 **项目主页**: [https://zhaorunrunrun.github.io/3DGS-REAL/](https://zhaorunrunrun.github.io/3DGS-REAL/)
 
 ## 当前版本能力
 
@@ -166,3 +172,23 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8080
 - 离线模式
 
 详见：[`docs/architecture.md`](docs/architecture.md) 和 [`docs/implementation_status.md`](docs/implementation_status.md)
+
+## 开源协议
+
+本项目采用 [Apache License 2.0](LICENSE) 开源协议。
+
+```
+Copyright 2026 3DGS REAL Contributors
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```

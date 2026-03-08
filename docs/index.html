@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3DGS REAL - 3D高斯溅射建模工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #F6F3EE;
+        }
+        .hero {
+            background: linear-gradient(135deg, #073B3A 0%, #0B6E4F 50%, #6BBF59 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+        .hero p {
+            font-size: 1.3em;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        .hero .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 15px 35px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-primary {
+            background: white;
+            color: #0B6E4F;
+            font-weight: 600;
+        }
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .feature-card h3 {
+            color: #0B6E4F;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        h2 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #073B3A;
+        }
+        .platforms {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+        .platform {
+            text-align: center;
+        }
+        .platform-icon {
+            font-size: 4em;
+            margin-bottom: 10px;
+        }
+        footer {
+            background: #073B3A;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+        footer a {
+            color: #6BBF59;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>3DGS REAL</h1>
+        <p>跨平台3D高斯溅射建模工具 - 从照片到3D模型</p>
+        <div class="buttons">
+            <a href="https://github.com/ZhaoRunRunRun/3DGS-REAL" class="btn btn-primary">GitHub仓库</a>
+            <a href="https://github.com/ZhaoRunRunRun/3DGS-REAL/releases" class="btn btn-secondary">下载应用</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>核心功能</h2>
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">📷</div>
+                <h3>智能拍摄引导</h3>
+                <p>实时相机预览，引导用户围绕物体旋转拍摄，自动计算覆盖角度，确保采集质量。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🖼️</div>
+                <h3>相册批量导入</h3>
+                <p>支持从相册批量选择照片，自动排序并映射环绕角度，快速开始建模流程。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">✨</div>
+                <h3>照片质量管理</h3>
+                <p>自动评分系统，实时显示照片质量，支持过滤低质量图片，提高重建成功率。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3>本地/远端重建</h3>
+                <p>灵活选择本地或远端重建模式，本地适合高性能设备，远端适合移动端和协作场景。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>3DGS训练</h3>
+                <p>集成COLMAP位姿恢复和3D Gaussian Splatting训练，自动化完成从照片到3D模型的全流程。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💾</div>
+                <h3>多格式导出</h3>
+                <p>支持导出SPLAT、PLY、GLB等多种格式，方便在不同平台和工具中使用。</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>支持平台</h2>
+        <div class="platforms">
+            <div class="platform">
+                <div class="platform-icon">🪟</div>
+                <h3>Windows</h3>
+            </div>
+            <div class="platform">
+                <div class="platform-icon">🍎</div>
+                <h3>macOS</h3>
+            </div>
+            <div class="platform">
+                <div class="platform-icon">🐧</div>
+                <h3>Linux</h3>
+            </div>
+            <div class="platform">
+                <div class="platform-icon">🤖</div>
+                <h3>Android</h3>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 3DGS REAL | 开源协议: <a href="https://github.com/ZhaoRunRunRun/3DGS-REAL/blob/main/LICENSE">Apache License 2.0</a></p>
+        <p>基于 <a href="https://flutter.dev">Flutter</a> 构建 | <a href="https://github.com/ZhaoRunRunRun/3DGS-REAL">查看源代码</a></p>
+    </footer>
+</body>
+</html>
