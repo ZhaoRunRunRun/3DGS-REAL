@@ -1,15 +1,16 @@
 # 3DGS REAL
 
-一个面向 Windows、macOS、Linux、Android 的 Flutter 跨平台应用骨架，用于引导用户围绕物体旋转拍摄照片，或从相册导入成组环绕照片，并在本地或远端服务器发起 3D Gaussian Splatting (3DGS) 建模任务。
+一个面向 Windows、macOS、Linux、Android 的 Flutter 跨平台应用，用于引导用户围绕物体旋转拍摄照片，或从相册导入一系列环绕物体拍摄的照片，并在本地或远端服务器发起 3D Gaussian Splatting (3DGS) 建模任务。
 
-## 当前已完成
+## 当前版本能力
 
-- Flutter 项目基础结构（应用层、页面层、服务层、模型层）
-- 采集与建模控制台首页 UI
-- 本地 / 远端重建模式抽象
-- 相机引导与重建服务接口占位
-- 一键初始化 Flutter 平台工程脚本
-- 面向后续 3DGS 管线接入的架构文档
+- 引导拍摄流程（已接入相机权限与设备可用性检查，当前采集结果仍使用演示照片串联流程）
+- 相册批量导入流程（已接入真实图片多选，失败时自动回退到演示流）
+- 环绕照片轨道分布可视化
+- 照片质量评分与筛选
+- 本地 / 远端重建模式切换
+- 3DGS 任务创建、进度跟踪、任务列表展示
+- 远端服务 API 骨架（FastAPI）
 
 ## 目标平台
 
@@ -18,47 +19,37 @@
 - Linux
 - Android
 
-## 核心功能规划
+## 目录结构
 
-1. 相机拍摄引导
-   - 引导用户围绕目标物体旋转拍摄
-   - 提示角度覆盖率、拍摄距离、模糊风险、光照问题
-2. 相册批量导入
-   - 导入多张按环绕顺序拍摄的图片
-   - 基础质检（分辨率、重复、模糊、曝光）
-3. 3DGS 建模
-   - 本地模式：桌面设备直接在本机运行重建管线
-   - 远端模式：上传图像与任务参数到服务端构建模型
-4. 结果展示与导出
-   - 预览训练状态、日志、缩略图
-   - 导出 splat / ply / glb 等成果格式
+- `lib/` Flutter 客户端代码
+- `docs/` 架构与设计说明
+- `scripts/` 项目初始化脚本
+- `server/` 远端 3DGS 服务端骨架
 
 ## 快速开始
 
 ### 1. 安装 Flutter SDK
 
-请先安装 Flutter，并确保以下命令可用：
+确保以下命令可用：
 
 ```bash
 flutter --version
 ```
 
-### 2. 初始化平台目录
-
-在仓库根目录执行：
+### 2. 初始化 Flutter 平台目录
 
 ```bash
 sh scripts/bootstrap_flutter.sh
 ```
 
-该脚本会自动补齐 Flutter 标准平台目录与缺失文件：
+该脚本会生成或补齐：
 
 - `android/`
 - `linux/`
 - `macos/`
 - `windows/`
 
-### 3. 拉取依赖
+### 3. 安装依赖
 
 ```bash
 flutter pub get
@@ -67,10 +58,28 @@ flutter pub get
 ### 4. 运行应用
 
 ```bash
+flutter run -d linux
 flutter run -d windows
 flutter run -d macos
-flutter run -d linux
 flutter run -d android
+```
+
+## Linux 桌面依赖
+
+在 RHEL / CentOS / Alibaba Cloud Linux 上建议安装：
+
+```bash
+dnf install -y clang cmake ninja-build pkg-config gtk3-devel libblkid-devel xz-devel
+```
+
+## 远端服务启动
+
+```bash
+cd server
+python3 -m venv .venv
+. .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8080
 ```
 
 ## 推荐后端接口
@@ -79,17 +88,15 @@ flutter run -d android
 
 `POST /api/reconstruction/jobs`
 
-请求体建议：
-
 ```json
 {
   "mode": "remote",
-  "images": ["..."],
+  "images": ["upload-1.jpg", "upload-2.jpg"],
   "pipeline": "3dgs",
   "options": {
     "use_colmap": true,
     "iterations": 30000,
-    "export_formats": ["splat", "ply"]
+    "export_formats": ["splat", "ply", "glb"]
   }
 }
 ```
@@ -106,11 +113,11 @@ flutter run -d android
 - `artifacts`
 - `logs`
 
-## 下一步接入建议
+## 后续可继续增强
 
-1. 接入 `camera` 插件实现实时取景和拍摄引导覆盖层
-2. 接入 `file_picker` / `image_picker` 完成图片导入
-3. 对接 Python 服务端（COLMAP + 3DGS 训练）
-4. 增加任务详情页、照片质量评估、模型预览页
+1. 接入真实 `camera` 实时取景、拍照与覆盖层引导
+2. 对导入照片补充 EXIF / 文件名排序策略与缩略图预览
+3. 对接 Python 训练服务（COLMAP + gsplat）
+4. 增加模型预览器、导出中心、项目管理页
 
 详见：`docs/architecture.md`
